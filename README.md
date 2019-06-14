@@ -4,6 +4,8 @@
 Store credentials in `credentials.json`
 ```json
 {
-  "bot": "token"
+  "bot": "token",
+  "darksky": "token",
+  "bingmaps": "token"
 }
 ```
