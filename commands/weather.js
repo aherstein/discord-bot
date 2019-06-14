@@ -8,15 +8,6 @@ module.exports = {
   bingMapsBaseUri: 'http://dev.virtualearth.net/REST/v1/Locations?key=' + credentials.bingmaps + '&',
 
   /**
-   * Returns the location name for weather commands, stripping out the sub-command
-   * @param params
-   * @returns {string}
-   */
-  getLocation: function (params) {
-    return params.splice(1).join(' ')
-  },
-
-  /**
    *
    * @param location string
    * @returns {Promise<Object>} {
