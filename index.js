@@ -1,13 +1,14 @@
+const credentials = require('./credentials')
 const {Client, Attachment} = require('discord.js')
 const client = new Client()
 const moment = require('moment')
-const credentials = require('./credentials')
 const axios = require('axios')
 const debug = require('debug')('bot')
 const winston = require('winston')
 
 // Commands
 const commandsTime = require('./commands/time')
+const commandsWeather = require('./commands/weather')
 
 const commandChar = '/'
 
@@ -27,8 +28,36 @@ function formatMessage (msg) {
   })
 }
 
+/**
+ * Returns command
+ *
+ * @param msg
+ * @returns {Promise<string>}
+ */
+function parseCommand (msg) {
+  return new Promise((resolve, reject) => {
+    formatMessage(msg).then(actualMessage => {
+      resolve(actualMessage.split(' ')[0])
+    })
+  })
+}
+
+/**
+ * Returns array of command parameters
+ *
+ * @param msg
+ * @returns {Promise<string>}
+ */
+function parseParameters (msg) {
+  return new Promise((resolve, reject) => {
+    formatMessage(msg).then(actualMessage => {
+      resolve(actualMessage.split(' ').splice(1)) // Remove first param as it's the command and return the rest as parameters
+    })
+  })
+}
+
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`)
+  debug('Logged in as %s!', client.user.tag)
 })
 
 client.on('message', msg => {
@@ -38,15 +67,29 @@ client.on('message', msg => {
     formatMessage(msg).then(actualMessage => {
       debug('%s @%s #%s %s', msg.guild.name, msg.member.displayName, msg.channel.name, actualMessage)
 
-      /** ping */
-      if (actualMessage === 'time') {
-        msg.channel.send(commandsTime.currentTime())
-      }
+      parseCommand(msg).then((command) => {
 
-      /** ping */
-      if (actualMessage === 'ping') {
-        msg.channel.send(moment().diff(startTime) + ' ms')
-      }
+        /** time */
+        if (command === 'time') {
+          msg.channel.send(commandsTime.currentTime())
+        }
+
+        /** weather */
+        if (command === 'weather') {
+          parseParameters(msg).then((params) => {
+            if (params[0] === 'raining') {
+              commandsWeather.isItRaining(params.splice(1).join(' ')).then((message) => {
+                msg.channel.send(message)
+              })
+            }
+          })
+        }
+
+        /** ping */
+        if (command === 'ping') {
+          msg.channel.send(moment().diff(startTime) + ' ms')
+        }
+      })
     })
 
   }
