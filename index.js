@@ -97,8 +97,14 @@ client.on('message', msg => {
         /** pokedex */
         if (command === 'pokedex' || command === 'pokédex') {
           parseParameters(msg).then((params) => {
-            if (params[0] === 'info') {
-              let pokemon = utils.getStringifiedParams(params)
+            if (params[0] === 'sprite') {
+              commandsPokedex.sprite(utils.getStringifiedParams(params)).then((spriteUrl) => {
+                msg.channel.send(new Attachment(spriteUrl))
+              }).catch(() => {
+                msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
+              })
+            } else { // info
+              let pokemon = utils.getStringifiedParams(params, true)
               commandsPokedex.info(pokemon).then((info) => {
                 commandsPokedex.sprite(pokemon).then((spriteUrl) => {
                   let sprite = new Attachment(spriteUrl)
@@ -106,13 +112,6 @@ client.on('message', msg => {
                 }).catch(() => {
                   msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
                 })
-              }).catch(() => {
-                msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
-              })
-            }
-            if (params[0] === 'sprite') {
-              commandsPokedex.sprite(utils.getStringifiedParams(params)).then((spriteUrl) => {
-                msg.channel.send(new Attachment(spriteUrl))
               }).catch(() => {
                 msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
               })
