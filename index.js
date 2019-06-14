@@ -5,10 +5,12 @@ const moment = require('moment')
 const axios = require('axios')
 const debug = require('debug')('bot')
 const winston = require('winston')
+const utils = require('./util')
 
 // Commands
 const commandsTime = require('./commands/time')
 const commandsWeather = require('./commands/weather')
+const commandsPokedex = require('./commands/pokedex')
 
 const commandChar = '/'
 const darkSkyAttribution = new RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
@@ -80,13 +82,39 @@ client.on('message', msg => {
         if (command === 'weather') {
           parseParameters(msg).then((params) => {
             if (params[0] === 'raining') {
-              commandsWeather.isItRaining(commandsWeather.getLocation(params)).then((message) => {
+              commandsWeather.isItRaining(utils.getStringifiedParams(params)).then((message) => {
                 msg.channel.send(message, darkSkyAttribution)
               })
             }
             if (params[0] === 'forecast') {
-              commandsWeather.forecast(commandsWeather.getLocation(params)).then((message) => {
+              commandsWeather.forecast(utils.getStringifiedParams(params)).then((message) => {
                 msg.channel.send(message, darkSkyAttribution)
+              })
+            }
+          })
+        }
+
+        /** pokedex */
+        if (command === 'pokedex' || command === 'pokédex') {
+          parseParameters(msg).then((params) => {
+            if (params[0] === 'info') {
+              let pokemon = utils.getStringifiedParams(params)
+              commandsPokedex.info(pokemon).then((info) => {
+                commandsPokedex.sprite(pokemon).then((spriteUrl) => {
+                  let sprite = new Attachment(spriteUrl)
+                  msg.channel.send(info, sprite)
+                }).catch(() => {
+                  msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
+                })
+              }).catch(() => {
+                msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
+              })
+            }
+            if (params[0] === 'sprite') {
+              commandsPokedex.sprite(utils.getStringifiedParams(params)).then((spriteUrl) => {
+                msg.channel.send(new Attachment(spriteUrl))
+              }).catch(() => {
+                msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
               })
             }
           })
