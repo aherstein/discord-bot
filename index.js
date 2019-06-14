@@ -60,6 +60,7 @@ client.on('ready', () => {
   debug('Logged in as %s!', client.user.tag)
 })
 
+
 client.on('message', msg => {
   let startTime = moment()
 
@@ -78,7 +79,12 @@ client.on('message', msg => {
         if (command === 'weather') {
           parseParameters(msg).then((params) => {
             if (params[0] === 'raining') {
-              commandsWeather.isItRaining(params.splice(1).join(' ')).then((message) => {
+              commandsWeather.isItRaining(commandsWeather.getLocation(params)).then((message) => {
+                msg.channel.send(message)
+              })
+            }
+            if (params[0] === 'forecast') {
+              commandsWeather.forecast(commandsWeather.getLocation(params)).then((message) => {
                 msg.channel.send(message)
               })
             }

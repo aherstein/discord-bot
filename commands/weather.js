@@ -8,6 +8,15 @@ module.exports = {
   bingMapsBaseUri: 'http://dev.virtualearth.net/REST/v1/Locations?key=' + credentials.bingmaps + '&',
 
   /**
+   * Returns the location name for weather commands, stripping out the sub-command
+   * @param params
+   * @returns {string}
+   */
+  getLocation: function (params) {
+    return params.splice(1).join(' ')
+  },
+
+  /**
    *
    * @param location string
    * @returns {Promise<Object>} {
@@ -26,10 +35,10 @@ module.exports = {
       if (address.length > 1) {
         let locality = address.slice(0, -1).join(' ')
         let adminDistrict = address[address.length - 1]
-        debug('Getting weather data for %s, %s', locality, adminDistrict)
+        debug('Geocoding %s, %s', locality, adminDistrict)
         params = params + '&locality=' + locality + '&adminDistrict=' + adminDistrict
       } else {
-        debug('Getting weather data for %s', address[0])
+        debug('Geocoding %s', address[0])
         params = params + '&locality=' + address[0]
       }
 
@@ -66,6 +75,21 @@ module.exports = {
           } else {
             resolve('It is NOT raining in ' + geo.name)
           }
+        }).catch(err => {
+          debug(err)
+          resolve('Sorry, I don\'t understand the location ' + location + '!')
+        })
+      }).catch(() => {
+        resolve('Sorry, I don\'t understand the location ' + location + '!')
+      })
+    })
+  },
+
+  forecast: function (location) {
+    return new Promise((resolve, reject) => {
+      this.geoCode(location).then(geo => {
+        axios.get(this.darkSkyBaseUri + geo.lat + ',' + geo.long).then(response => {
+          resolve('Forecast for ' + geo.name + ': ' + response.data.minutely.summary + ' ' + response.data.hourly.summary + ' ' + response.data.daily.summary + ' ')
         }).catch(err => {
           debug(err)
           resolve('Sorry, I don\'t understand the location ' + location + '!')
