@@ -1,5 +1,5 @@
 const credentials = require('./credentials')
-const {Client, Attachment} = require('discord.js')
+const {Client, Attachment, RichEmbed} = require('discord.js')
 const client = new Client()
 const moment = require('moment')
 const axios = require('axios')
@@ -11,6 +11,7 @@ const commandsTime = require('./commands/time')
 const commandsWeather = require('./commands/weather')
 
 const commandChar = '/'
+const darkSkyAttribution = new RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
 
 /**
  * Strips command char and any mentions
@@ -80,12 +81,12 @@ client.on('message', msg => {
           parseParameters(msg).then((params) => {
             if (params[0] === 'raining') {
               commandsWeather.isItRaining(commandsWeather.getLocation(params)).then((message) => {
-                msg.channel.send(message)
+                msg.channel.send(message, darkSkyAttribution)
               })
             }
             if (params[0] === 'forecast') {
               commandsWeather.forecast(commandsWeather.getLocation(params)).then((message) => {
-                msg.channel.send(message)
+                msg.channel.send(message, darkSkyAttribution)
               })
             }
           })
