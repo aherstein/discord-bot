@@ -1,11 +1,13 @@
 const credentials = require('./credentials')
-const {Client, Attachment, RichEmbed} = require('discord.js')
-const client = new Client()
+const Discord = require('discord.js')
+const discord = new Discord.Client()
 const moment = require('moment')
 const axios = require('axios')
 const debug = require('debug')('bot')
 const winston = require('winston')
 const utils = require('./util')
+const Postgres = require('pg')
+const pg = new Postgres.Client()
 
 // Commands
 const commandsTime = require('./commands/time')
@@ -13,7 +15,7 @@ const commandsWeather = require('./commands/weather')
 const commandsPokedex = require('./commands/pokedex')
 
 const commandChar = '/'
-const darkSkyAttribution = new RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
+const darkSkyAttribution = new Discord.RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
 
 /**
  * Strips command char and any mentions
@@ -59,12 +61,11 @@ function parseParameters (msg) {
   })
 }
 
-client.on('ready', () => {
-  debug('Logged in as %s!', client.user.tag)
+discord.on('ready', () => {
+  debug('Logged in as %s!', discord.user.tag)
 })
 
-
-client.on('message', msg => {
+discord.on('message', msg => {
   let startTime = moment()
 
   if (msg.content.startsWith(commandChar)) {
@@ -99,7 +100,7 @@ client.on('message', msg => {
           parseParameters(msg).then((params) => {
             if (params[0] === 'sprite') {
               commandsPokedex.sprite(utils.getStringifiedParams(params)).then((spriteUrl) => {
-                msg.channel.send(new Attachment(spriteUrl))
+                msg.channel.send(new Discord.Attachment(spriteUrl))
               }).catch(() => {
                 msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
               })
@@ -107,7 +108,7 @@ client.on('message', msg => {
               let pokemon = utils.getStringifiedParams(params, true)
               commandsPokedex.info(pokemon).then((info) => {
                 commandsPokedex.sprite(pokemon).then((spriteUrl) => {
-                  let sprite = new Attachment(spriteUrl)
+                  let sprite = new Discord.Attachment(spriteUrl)
                   msg.channel.send(info, sprite)
                 }).catch(() => {
                   msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
@@ -129,6 +130,6 @@ client.on('message', msg => {
   }
 })
 
-client.login(credentials.bot).catch((err) => {
+discord.login(credentials.bot).catch((err) => {
   debug(err)
 })
