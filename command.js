@@ -15,6 +15,18 @@ class Command {
     this._params = this.parseParameters()
   }
 
+  get actualMessage () {
+    return this._actualMessage
+  }
+
+  get command () {
+    return this._command
+  }
+
+  get params () {
+    return this._params
+  }
+
   /**
    * Strips command char and any mentions
    *
@@ -55,16 +67,17 @@ class Command {
     return this._originalMessage.startsWith(this.commandChar)
   }
 
-  get actualMessage () {
-    return this._actualMessage
-  }
-
-  get command () {
-    return this._command
-  }
-
-  get params () {
-    return this._params
+  /**
+   * Returns stringified parameter, stripping out the sub-command
+   * @param noSubCommand boolean Specify this if you don't want to strip out the first param
+   * @returns {string}
+   */
+  stringifiedParams (noSubCommand = false) {
+    if (noSubCommand) {
+      return this._params.join(' ')
+    } else {
+      return this._params.splice(1).join(' ')
+    }
   }
 }
 

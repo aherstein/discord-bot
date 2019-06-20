@@ -51,13 +51,13 @@ discord.on('message', msg => {
     /** pokedex */
     if (command.command === 'pokedex' || command.command === 'pokédex') {
       if (command.params[0] === 'sprite') {
-        commandsPokedex.sprite(utils.getStringifiedParams(command.params)).then((spriteUrl) => {
+        commandsPokedex.sprite(command.stringifiedParams()).then((spriteUrl) => {
           msg.channel.send(new Discord.Attachment(spriteUrl))
         }).catch(() => {
           msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
         })
       } else { // info
-        let pokemon = utils.getStringifiedParams(command.params, true)
+        let pokemon = command.stringifiedParams(true)
         commandsPokedex.info(pokemon).then((info) => {
           commandsPokedex.sprite(pokemon).then((spriteUrl) => {
             let sprite = new Discord.Attachment(spriteUrl)
