@@ -23,14 +23,11 @@ const darkSkyAttribution = new Discord.RichEmbed().setTitle('Powered by Dark Sky
  * @param msg
  * @returns {Promise<string>}
  */
-function formatMessage (msg) {
-  return new Promise((resolve, reject) => {
-    let re = new RegExp('\\' + commandChar, 'g')
-    let actualMessage = msg.content.replace(re, '') // Remove command char
-      .replace(/^<.*> /g, '') // Remove all mentions
-      .toLowerCase()
-    resolve(actualMessage)
-  })
+async function formatMessage (msg) {
+  let re = new RegExp('\\' + commandChar, 'g')
+  return msg.content.replace(re, '') // Remove command char
+    .replace(/^<.*> /g, '') // Remove all mentions
+    .toLowerCase()
 }
 
 /**
@@ -39,26 +36,20 @@ function formatMessage (msg) {
  * @param msg
  * @returns {Promise<string>}
  */
-function parseCommand (msg) {
-  return new Promise((resolve, reject) => {
-    formatMessage(msg).then(actualMessage => {
-      resolve(actualMessage.split(' ')[0])
-    })
-  })
+async function parseCommand (msg) {
+  const actualMessage = await formatMessage(msg)
+  return actualMessage.split(' ')[0]
 }
 
 /**
  * Returns array of command parameters
  *
  * @param msg
- * @returns {Promise<string>}
+ * @returns {Promise<string[]>}
  */
-function parseParameters (msg) {
-  return new Promise((resolve, reject) => {
-    formatMessage(msg).then(actualMessage => {
-      resolve(actualMessage.split(' ').splice(1)) // Remove first param as it's the command and return the rest as parameters
-    })
-  })
+async function parseParameters (msg) {
+  const actualMessage = await formatMessage(msg)
+  return actualMessage.split(' ').splice(1) // Remove first param as it's the command and return the rest as parameters
 }
 
 discord.on('ready', () => {

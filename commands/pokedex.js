@@ -18,37 +18,34 @@ module.exports = {
       'Type: ' + utils.toCapitalized(info.type)
   },
 
-  info: function (pokemon) {
-    return new Promise((resolve, reject) => {
-      axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon).then(response => {
-        let data = response.data
-        let info = {}
-        info.id = data.id
-        info.name = data.species.name
-        info.type = ''
-        data.types.forEach((type, index) => {
-          info.type = info.type + type.type.name + ' '
-        })
-
-        if (info.id !== null && info.name !== null && info.type !== null) { // Building info object complete
-          resolve(this.formatInfo(info))
-        }
-      }).catch(err => {
-        debug(err)
-        reject()
+  info: async function (pokemon) {
+    try {
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon)
+      let data = response.data
+      let info = {}
+      info.id = data.id
+      info.name = data.species.name
+      info.type = ''
+      data.types.forEach((type, index) => {
+        info.type = info.type + type.type.name + ' '
       })
-    })
+
+      if (info.id !== null && info.name !== null && info.type !== null) { // Building info object complete
+        return this.formatInfo(info)
+      }
+    } catch (err) {
+      debug(err)
+    }
   },
 
-  sprite: function (pokemon) {
-    return new Promise((resolve, reject) => {
-      axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon).then(response => {
-        let data = response.data
-        resolve(data.sprites.front_default)
-      }).catch(err => {
-        debug(err)
-        reject()
-      })
-    })
+  sprite: async function (pokemon) {
+    try {
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon)
+      let data = response.data
+      return data.sprites.front_default
+    }
+    catch (err) {
+      debug(err)
+    }
   }
 }
