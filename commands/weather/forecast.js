@@ -1,11 +1,43 @@
-const credentials = require('../credentials')
-const moment = require('moment')
+const credentials = require('../../credentials')
 const axios = require('axios')
 const debug = require('debug')('bot:weather')
+const Discord = require('discord.js')
 
-module.exports = {
-  darkSkyBaseUri: 'https://api.darksky.net/forecast/' + credentials.darksky + '/',
-  bingMapsBaseUri: 'http://dev.virtualearth.net/REST/v1/Locations?key=' + credentials.bingmaps + '&',
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
+
+module.exports = class Forecast extends commando.Command {
+  constructor (client) {
+    super(client, {
+      name: 'forecast',
+      aliases: ['weather'],
+      group: 'weather',
+      memberName: 'forecast',
+      description: 'Get weather forecast.',
+      details: oneLine`
+      `,
+      examples: ['forecast la'],
+
+      args: [
+        {
+          key: 'location',
+          label: 'Location',
+          prompt: 'Enter location.',
+          type: 'string',
+          infinite: false
+        }
+      ]
+    })
+
+    this.darkSkyBaseUri = 'https://api.darksky.net/forecast/' + credentials.darksky + '/'
+    this.bingMapsBaseUri = 'http://dev.virtualearth.net/REST/v1/Locations?key=' + credentials.bingmaps + '&'
+    this.darkSkyAttribution = new Discord.RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
+  }
+
+  async run (msg, args) {
+    const message = await this.forecast(args.location)
+    msg.channel.send(message, this.darkSkyAttribution)
+  }
 
   /**
    *
@@ -16,7 +48,7 @@ module.exports = {
           name: name
         }
    */
-  geoCode: async function (location) {
+  async geoCode (location) {
     // Split city from state
     let address = location.split(' ')
     let params = '&maxResults=1'
@@ -53,24 +85,9 @@ module.exports = {
       throw(err)
     }
 
-  },
+  }
 
-  isItRaining: async function (location) {
-    try {
-      const geo = await this.geoCode(location)
-      const response = await axios.get(this.darkSkyBaseUri + geo.lat + ',' + geo.long)
-      if (response.data.currently.icon === 'rain') {
-        return 'It is raining in ' + geo.name
-      } else {
-        return 'It is NOT raining in ' + geo.name
-      }
-    } catch (err) {
-      debug(err)
-      return 'Sorry, I don\'t understand the location ' + location + '!'
-    }
-  },
-
-  forecast: async function (location) {
+  async forecast (location) {
     try {
       const geo = await this.geoCode(location)
       const response = await axios.get(this.darkSkyBaseUri + geo.lat + ',' + geo.long)
