@@ -37,12 +37,12 @@ discord.on('message', msg => {
     /** weather */
     if (command.command === 'weather') {
       if (command.params[0] === 'raining') {
-        commandsWeather.isItRaining(utils.getStringifiedParams(command.params)).then((message) => {
+        commandsWeather.isItRaining(command.stringifiedParams()).then((message) => {
           msg.channel.send(message, darkSkyAttribution)
         })
       }
       if (command.params[0] === 'forecast') {
-        commandsWeather.forecast(utils.getStringifiedParams(command.params)).then((message) => {
+        commandsWeather.forecast(command.stringifiedParams()).then((message) => {
           msg.channel.send(message, darkSkyAttribution)
         })
       }
