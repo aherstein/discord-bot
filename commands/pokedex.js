@@ -3,6 +3,7 @@ const moment = require('moment')
 const axios = require('axios')
 const debug = require('debug')('bot:pokedex')
 const utils = require('../util')
+const querystring = require('querystring')
 
 module.exports = {
   pokedexBaseUri: 'https://pokeapi.co/api/v2/',
@@ -20,7 +21,8 @@ module.exports = {
 
   info: async function (pokemon) {
     try {
-      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon)
+      console.log(querystring.escape(pokemon))
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon))
       let data = response.data
       let info = {}
       info.id = data.id
@@ -30,9 +32,7 @@ module.exports = {
         info.type = info.type + type.type.name + ' '
       })
 
-      if (info.id !== null && info.name !== null && info.type !== null) { // Building info object complete
-        return this.formatInfo(info)
-      }
+      return this.formatInfo(info)
     } catch (err) {
       debug(err)
     }
@@ -40,7 +40,7 @@ module.exports = {
 
   sprite: async function (pokemon) {
     try {
-      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + pokemon)
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon))
       let data = response.data
       return data.sprites.front_default
     }
