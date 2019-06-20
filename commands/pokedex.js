@@ -21,7 +21,7 @@ module.exports = {
 
   info: async function (pokemon) {
     try {
-      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon))
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape((pokemon.trim())))
       let data = response.data
       let info = {}
       info.id = data.id
@@ -40,7 +40,7 @@ module.exports = {
 
   sprite: async function (pokemon) {
     try {
-      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon))
+      const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon.trim()))
       let data = response.data
       return data.sprites.front_default
     }
