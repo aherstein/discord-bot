@@ -51,23 +51,33 @@ discord.on('message', msg => {
     /** pokedex */
     if (command.command === 'pokedex' || command.command === 'pokédex') {
       if (command.params[0] === 'sprite') {
-        commandsPokedex.sprite(command.stringifiedParams()).then((spriteUrl) => {
-          msg.channel.send(new Discord.Attachment(spriteUrl))
-        }).catch(() => {
-          msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
-        })
+        const respond = async () => {
+          try {
+            const spriteUrl = await commandsPokedex.sprite(command.stringifiedParams())
+            msg.channel.send(new Discord.Attachment(spriteUrl))
+          } catch (err) {
+            msg.channel.send(err.message)
+          }
+
+        }
+        respond()
+
       } else { // info
         let pokemon = command.stringifiedParams(true)
-        commandsPokedex.info(pokemon).then((info) => {
-          commandsPokedex.sprite(pokemon).then((spriteUrl) => {
-            let sprite = new Discord.Attachment(spriteUrl)
+
+        const respond = async () => {
+          try {
+            const info = await commandsPokedex.info(pokemon)
+            const spriteUrl = await commandsPokedex.sprite(pokemon)
+            const sprite = new Discord.Attachment(spriteUrl)
             msg.channel.send(info, sprite)
-          }).catch(() => {
-            msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
-          })
-        }).catch(() => {
-          msg.channel.send('Sorry, I\'ve never heard of that Pokémon!')
-        })
+          } catch (err) {
+            msg.channel.send(err.message)
+          }
+
+        }
+        respond()
+
       }
     }
 

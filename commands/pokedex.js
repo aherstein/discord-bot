@@ -21,7 +21,6 @@ module.exports = {
 
   info: async function (pokemon) {
     try {
-      console.log(querystring.escape(pokemon))
       const response = await axios.get(this.pokedexBaseUri + 'pokemon/' + querystring.escape(pokemon))
       let data = response.data
       let info = {}
@@ -35,6 +34,7 @@ module.exports = {
       return this.formatInfo(info)
     } catch (err) {
       debug(err)
+      throw new Error('Sorry, I\'ve never heard of that Pokémon!')
     }
   },
 
@@ -46,6 +46,7 @@ module.exports = {
     }
     catch (err) {
       debug(err)
+      throw new Error('Sorry, I\'ve never heard of that Pokémon!')
     }
   }
 }
