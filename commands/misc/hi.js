@@ -1,4 +1,4 @@
-const debug = require('debug')('bot:pokedex')
+const debug = require('debug')('bot:hi')
 const moment = require('moment')
 const commando = require('discord.js-commando')
 const oneLine = require('common-tags').oneLine
@@ -18,6 +18,6 @@ module.exports = class Time extends commando.Command {
   }
 
   async run (msg, args) {
-    return msg.channel.send('Hello!!!!')
+    return msg.reply('Hello!!!!')
   }
 }

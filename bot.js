@@ -44,6 +44,7 @@ client.registry
   .registerGroups([
     ['pokedex', 'Pokédex'],
     ['weather', 'Weather'],
+    ['friendcode', 'Friend Code'],
     ['misc', 'Miscellaneous']
   ])
   .registerDefaults()

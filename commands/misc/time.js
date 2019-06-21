@@ -1,4 +1,4 @@
-const debug = require('debug')('bot:pokedex')
+const debug = require('debug')('bot:time')
 const moment = require('moment')
 const commando = require('discord.js-commando')
 const oneLine = require('common-tags').oneLine

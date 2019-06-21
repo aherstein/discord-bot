@@ -9,4 +9,4 @@ create table deleted_messages
 );
 
 -- Down
-DROP TABLE deleted_messages;
+drop table deleted_messages;
