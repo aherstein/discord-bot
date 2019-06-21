@@ -44,7 +44,7 @@ client.registry
   .registerGroups([
     ['pokedex', 'Pokédex'],
     ['weather', 'Weather'],
-    ['time', 'Time']
+    ['misc', 'Miscellaneous']
   ])
   .registerDefaults()
   // .registerTypesIn(path.join(__dirname, 'types'))

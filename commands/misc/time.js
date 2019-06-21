@@ -8,7 +8,7 @@ module.exports = class Time extends commando.Command {
     super(client, {
       name: 'time',
       aliases: [],
-      group: 'time',
+      group: 'misc',
       memberName: 'time',
       description: 'Get current time.',
       details: oneLine`
