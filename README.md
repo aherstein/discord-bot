@@ -14,4 +14,4 @@ Store credentials in `credentials.json`
   "darksky": "token",
   "bingmaps": "token"
 }
-```
+``` 
