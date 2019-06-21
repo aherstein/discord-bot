@@ -8,7 +8,7 @@ module.exports = {
     const db = await sqlite.open(path.join(__dirname, 'database.sqlite3'))
     const currentTime = moment().format('YYYY-MM-DD HH:mm:SS Z')
     return db.run('insert into deleted_messages(message_time, server, channel, user, message) values (?, ?, ?, ?, ?)',
-      [currentTime, msg.guild.name, msg.member.displayName, msg.channel.name, msg.content])
+      [currentTime, msg.guild.name, msg.channel.name, msg.member.displayName, msg.content])
   }
 
 }
