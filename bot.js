@@ -18,7 +18,7 @@ client
   .on('disconnect', () => { debug('Disconnected!') })
   .on('reconnecting', () => { debug('Reconnecting...') })
   .on('commandError', (cmd, err) => {
-    if (err instanceof commando.FriendlyError) return
+    if (err instanceof Commando.FriendlyError) return
     debug('Error in command %s:%s %s', cmd.groupID, cmd.memberName, err)
   })
 
