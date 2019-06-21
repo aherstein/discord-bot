@@ -3,6 +3,9 @@ credentials.json
 # WebStorm
 .idea/
 
+# Database
+*.sqlite3
+
 # Logs
 logs
 *.log

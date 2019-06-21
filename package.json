@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "bot": "DEBUG=bot* COMMAND_CHAR=/ node --use_strict bot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node migrate.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "discord.js-commando": "^0.10.0",
     "moment": "^2.24.0",
     "pg": "^7.11.0",
+    "sqlite": "^3.0.3",
     "winston": "^3.2.1"
   }
 }
