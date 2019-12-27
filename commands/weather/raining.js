@@ -1,4 +1,3 @@
-const credentials = require('../../credentials')
 const axios = require('axios')
 const debug = require('debug')('bot:weather')
 const Discord = require('discord.js')
@@ -29,8 +28,8 @@ module.exports = class Forecast extends commando.Command {
       ]
     })
 
-    this.darkSkyBaseUri = 'https://api.darksky.net/forecast/' + credentials.darksky + '/'
-    this.bingMapsBaseUri = 'http://dev.virtualearth.net/REST/v1/Locations?key=' + credentials.bingmaps + '&'
+    this.darkSkyBaseUri = 'https://api.darksky.net/forecast/' + process.env.DARKSKY_TOKEN + '/'
+    this.bingMapsBaseUri = 'http://dev.virtualearth.net/REST/v1/Locations?key=' + process.env.BINGMAPS_TOKEN + '&'
     this.darkSkyAttribution = new Discord.RichEmbed().setTitle('Powered by Dark Sky').setURL('https://darksky.net/poweredby/')
   }
 

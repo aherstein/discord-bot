@@ -1,11 +1,8 @@
-const credentials = require('./credentials')
 const process = require('process')
 const debug = require('debug')('bot')
 const commando = require('discord.js-commando')
 const path = require('path')
 const oneLine = require('common-tags').oneLine
-const sqlite = require('sqlite')
-const db = require('./db-operations')
 const client = new commando.Client({
   commandPrefix: process.env.COMMAND_CHAR
 })
@@ -36,19 +33,15 @@ client
     debug('Error in command %s:%s %s', cmd.groupID, cmd.memberName, err)
   })
 
-client.setProvider(
-  sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
-).catch(debug)
-
 client.registry
   .registerGroups([
     ['pokedex', 'Pokédex'],
     ['weather', 'Weather'],
-    ['friendcode', 'Friend Code'],
+//  ['friendcode', 'Friend Code'],
     ['misc', 'Miscellaneous']
   ])
   .registerDefaults()
   // .registerTypesIn(path.join(__dirname, 'types'))
   .registerCommandsIn(path.join(__dirname, 'commands'))
 
-client.login(credentials.bot)
+client.login(process.env.BOT_TOKEN)
