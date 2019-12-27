@@ -1,4 +1,3 @@
-const credentials = require('./credentials')
 const process = require('process')
 const debug = require('debug')('bot')
 const commando = require('discord.js-commando')
@@ -51,4 +50,4 @@ client.registry
   // .registerTypesIn(path.join(__dirname, 'types'))
   .registerCommandsIn(path.join(__dirname, 'commands'))
 
-client.login(credentials.bot)
+client.login(process.env.BOT_TOKEN)
